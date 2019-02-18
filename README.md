@@ -11,6 +11,8 @@ PAS (Pivotal Application Service) step by step is a training program to help you
 
 # Overview
 
+The first round for this step by step training is based on Google cloud provider.
+
 1. Deploy management infrastructure
 2. Create a jumpbox
 3. From jumpbox create a management BOSH director
