@@ -27,3 +27,12 @@ resource "google_compute_subnetwork" "concourse" {
   private_ip_google_access = "${var.internetless}"
 }
 
+module "jumpbox" {
+  source = "../modules/jumpbox"
+
+  project  = "${var.project}"
+  env_name = "${var.env_name}"
+  zones    = "${var.zones}"
+  subnet   = "${google_compute_subnetwork.jbx.name}"
+  network   = "${google_compute_network.mgmt.name}"
+}
