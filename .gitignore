@@ -3,3 +3,5 @@
 *.swp
 *.local
 *.sample
+*.tfstate*
+.terraform
