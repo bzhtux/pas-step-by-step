@@ -29,6 +29,14 @@ To deploy *management infrastructure* we are using a custom terraform recipe.
 
 ![Management infrastructure schema](assets/images/infra-mgmt.png)
 
+## GET
+
+From within the local repository' directory:
+
+```bash
+git checkout step1
+```
+
 ## Network and subnets
 
 Main network is named `${var.env_name}-mgmt-network` and rely on 3 subnets:
@@ -65,6 +73,14 @@ terraform apply plan
 
 # Step2: create a jumpbox
 
+## GET
+
+From within the local repository' directory:
+
+```bash
+git checkout step2
+```
+
 ## Network and subnet
 
 | Network | Subnets | Instances |
@@ -75,7 +91,18 @@ Private ip address is dynamically allocated using DHCP.
 
 ## DNS
 
-A dns is used for jumpbox, so you have to set up a new dns record for ${var.env_name}.\<your domain name\>. with dns provided by Google DNS.
+A dns is used for jumpbox, so you have to set up a new dns record for `${var.env_name}.<your domain name>`. with dns servers provided by Google DNS:
+
+```bash
+dig +short NS ${var.env_name}.domain.com
+ns-cloud-c1.googledomains.com.
+ns-cloud-c2.googledomains.com.
+ns-cloud-c3.googledomains.com.
+ns-cloud-c4.googledomains.com.
+```
+
+A new dns record (A) will be set for `jbx.${var.env_name}.domain.com`
+
 
 ## Firewall
 
