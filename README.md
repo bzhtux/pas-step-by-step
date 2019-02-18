@@ -106,7 +106,7 @@ A new dns record (A) will be set for `jbx.${var.env_name}.domain.com`
 
 ## Firewall
 
-In order to access to jumpbox using SSH, open port 22 from anywhere to jumpbox.
+In order to access to jumpbox using SSH, port 22 is opened from anywhere to jumpbox.
 
 ## Run
 
