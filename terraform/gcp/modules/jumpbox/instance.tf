@@ -11,7 +11,6 @@ resource "google_compute_instance" "jumpbox" {
 
   boot_disk {
     initialize_params {
-      # image = "debian-cloud/debian-9"
       image = "projects/ubuntu-os-cloud/global/images/ubuntu-1804-bionic-v20190212a"
       size  = "50"
       type  = "pd-ssd"

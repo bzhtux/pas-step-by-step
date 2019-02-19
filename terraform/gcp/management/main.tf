@@ -27,6 +27,23 @@ resource "google_compute_subnetwork" "concourse" {
   private_ip_google_access = "${var.internetless}"
 }
 
+resource "google_compute_firewall" "bosh-allow-ports" {
+  name      = "bosh-allow"
+  network   = "${google_compute_network.mgmt.name}"
+  source_ranges = ["${var.jbx_cidr}"]
+  target_tags = ["bosh-internal"]
+
+  allow {
+    protocol = "icmp"
+  }
+
+  allow {
+    protocol = "tcp"
+    ports    = ["25555", "8443", "8844", "6868"]
+}   
+}
+
+
 module "jumpbox" {
   source = "../modules/jumpbox"
 
