@@ -1,0 +1,26 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: pcfnorm/rootfs
+    tag: 'latest'
+
+inputs:
+- name: terraform-pivotalcf
+
+outputs:
+- name: secrets-output
+
+params:
+  OPSMAN_TARGET:
+  OPSMAN_ADMIN:
+  OPSMAN_PASSWORD:
+  OPSMAN_PASSPHRASE:
+  GCP_PROJECT_ID:
+  GCP_PRIVATE_KEY_ID:
+  GCP_PRIVATE_KEY:
+
+run:
+  path: terraform-pivotalcf/pipelines/tasks/generate-secrets/task.sh

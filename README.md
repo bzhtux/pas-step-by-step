@@ -31,7 +31,7 @@ Main network is named `${var.env_name}-mgmt-network` with 3 subnets:
  - `${var.env_name}-bosh-subnet` : dedicated to BOSH (the management one)
  - `${var.env_name}-concourse-subnet` : dedicated to concourse
 
-where `${var.env_name}` comes from terraform variables.
+**where `${var.env_name}` comes from terraform variables and by convenience is set to *dev*.**
 
 ## Subnets CIDRs:
 
@@ -243,3 +243,7 @@ Succeeded
 ```
 
 You can jump to step4 below!
+
+# Step4: deploy concourse
+
+

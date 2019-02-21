@@ -78,7 +78,7 @@ bosh int "$BOSH_DIR"/bosh.yml \
 	--vars-store "$BOSH_DIR"/secrets.yml
 
 bosh create-env "$BOSH_DIR"/bosh.yml \
-		--state=state.json \
+		--state="$BOSH_DIR"/state.json \
 		-l "$BOSH_DIR"/secrets.yml \
 		-o "$BOSH_DIR"/gcp/cpi.yml \
 		-o "$BOSH_DIR"/uaa.yml \

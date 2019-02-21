@@ -5,3 +5,4 @@
 *.sample
 *.tfstate*
 .terraform
+pipelines/config

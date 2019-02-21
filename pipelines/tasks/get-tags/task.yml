@@ -1,0 +1,20 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: pcfnorm/rootfs
+    tag: 'latest'
+
+inputs:
+- name: terraform-pivotalcf
+- name: vm-tags
+
+# outputs:
+# - name: secrets-output
+
+params:
+
+run:
+  path: terraform-pivotalcf/pipelines/tasks/get-tags/task.sh

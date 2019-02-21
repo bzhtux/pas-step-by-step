@@ -4,10 +4,10 @@ resource "google_compute_address" "jumpbox" {
 }
 
 resource "google_compute_instance" "jumpbox" {
-  name          = "${var.env_name}-jbx"
-  machine_type  = "${var.jumpbox_machine_type}"
-  zone          = "${element(var.zones, 1)}"
-  tags          = ["${var.env_name}-jumpbox-external"]
+  name         = "${var.env_name}-jbx"
+  machine_type = "${var.jumpbox_machine_type}"
+  zone         = "${element(var.zones, 1)}"
+  tags         = ["${var.env_name}-jumpbox-external"]
 
   boot_disk {
     initialize_params {

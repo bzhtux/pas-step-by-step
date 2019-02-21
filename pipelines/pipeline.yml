@@ -1,0 +1,126 @@
+---
+# Set required resources:
+#  - pivnet p-automation-tasks
+#  - pivnet p-automation-image
+#  - pivnet opsman-image
+#  - tf-pas-repo
+# Run jobs:
+#  - deploy infra with TF
+#  - create opsman vm
+#  - deploy PAS
+#  - apply changes
+resource_types:
+- name: pivnet
+  type: docker-image
+  source:
+    repository: pivotalcf/pivnet-resource
+    tag: latest-final
+
+- name: terraform
+  type: docker-image
+  source:
+    repository: ljfranklin/terraform-resource
+    tag: beta-backend
+
+resources:
+- name: terraform
+  type: terraform
+  source:
+    env_name: staging
+    delete_on_failure: true
+    backend_type: s3
+    backend_config:
+      bucket: bzhtux-lab
+      key: terraform-state/terraform.tfstate
+      access_key: {{storage_access_key}}
+      secret_key: {{storage_secret_key}}
+      region: eu-west-3
+    vars:
+      tag_name: concourse
+    env:
+      AWS_ACCESS_KEY_ID: {{environment_access_key}}
+      AWS_SECRET_ACCESS_KEY: {{environment_secret_key}}
+
+- name: platform-automation
+  type: pivnet
+  source:
+    api_token: {{pivnet_token}}
+    product_slug: platform-automation
+    product_version: 1\.(.*) # pin to major version 1
+    sort_by: semver
+
+- name: opsman-image
+  type: pivnet
+  source:
+    api_token: {{pivnet_token}}
+    product_slug: ops-manager
+    product_version: 2\.4\.(.*)
+    sort_by: semver
+
+- name: terraform-pivotalcf
+  type: git
+  source:
+    uri: git@github.com:bzhtux/pas-step-by-step.git
+    branch: feat/step4+
+    private_key: {{git_private_key}}
+
+- name: terraform-tfvars
+  type: s3
+  source:
+    access_key_id: {{storage_access_key}}
+    secret_access_key: {{storage_secret_key}}
+    region_name: eu-west-3
+    bucket: bzhtux-lab
+    regexp: terraform/GCP/terraform-(.*).tfvars
+
+jobs:
+- name: deploy-pas-infra
+  plan:
+  - get: terraform-pivotalcf
+  - get: terraform-tfvars
+  - task: prepare-tf-src
+    file: terraform-pivotalcf/pipelines/tasks/deploy-pas-infra/task.yml
+  - put: terraform
+    params:
+      env_name: dev
+      terraform_source: terraform-pivotalcf/terraforming-pas
+
+- name: create-opsman-vm
+  plan:
+  - aggregate:
+    - &get-p-automation-tasks
+      get: platform-automation-tasks
+      resource: platform-automation
+      params:
+        globs:
+        - '*tasks*.zip'
+        unpack: true
+    - &get-p-automation-image
+      get: platform-automation-image
+      resource: platform-automation
+      params:
+        globs:
+        - '*image*.tgz'
+        unpack: true
+    - get: terraform-pivotalcf
+      passed: [deploy-pas-infra]
+    - get: opsman-image
+      params:
+        globs:
+        - '*GCP*'
+  - &generate-secrets
+    task: generate-secrets
+    file: terraform-pivotalcf/pipelines/tasks/generate-secrets/task.yml
+    params:
+        OPSMAN_TARGET: {{opsman_target}}
+        OPSMAN_ADMIN: {{opsman_username}}
+        OPSMAN_PASSWORD: {{opsman_password}}
+        OPSMAN_PASSPHRASE: {{opsman_decryption-passphrase}}
+        GCP_PROJECT_ID: {{gcp_project_id}}
+        GCP_PRIVATE_KEY_ID: {{gcp_private_key_id}}
+        GCP_PRIVATE_KEY: {{gcp_private_key}}
+#   - &generate-opsman-config
+#     task: create-opsman-config
+#     file: terraform-pivotalcf/pipelines/tasks/create-opsman-config/task.yml
+  - task: get-tags
+    file: terraform-pivotalcf/pipelines/tasks/get-tags/task.yml
