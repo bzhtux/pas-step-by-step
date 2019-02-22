@@ -92,10 +92,31 @@ jobs:
     params:
       env_name: dev
       terraform_source: tf-src/terraforming-pas
+  - task: get-vms-tag
+    file: ci-src/pipelines/tasks/get-tags/task.yml
+
+- name: get-vm-tags
+  plan:
+
+- name: destroy-terraforming-pas
+  plan:
+  - get: terraform-pivotalcf
+  - get: terraform-tfvars
+  - get: ci-src
+  - task: prepare-tf-src
+    file: ci-src/pipelines/tasks/deploy-pas-infra/task.yml
+  - put: terraform
+    params:
+      env_name: dev
+      terraform_source: tf-src/terraforming-pas
+      action: destroy
+    get_params:
+      action: destroy
 
 - name: create-opsman-vm
   plan:
   - aggregate:
+    - get: ci-src
     - &get-p-automation-tasks
       get: platform-automation-tasks
       resource: platform-automation
@@ -118,7 +139,7 @@ jobs:
         - '*GCP*'
   - &generate-secrets
     task: generate-secrets
-    file: terraform-pivotalcf/pipelines/tasks/generate-secrets/task.yml
+    file: ci-src/pipelines/tasks/generate-secrets/task.yml
     params:
         OPSMAN_TARGET: {{opsman_target}}
         OPSMAN_ADMIN: {{opsman_username}}
@@ -127,8 +148,8 @@ jobs:
         GCP_PROJECT_ID: {{gcp_project_id}}
         GCP_PRIVATE_KEY_ID: {{gcp_private_key_id}}
         GCP_PRIVATE_KEY: {{gcp_private_key}}
-#   - &generate-opsman-config
-#     task: create-opsman-config
-#     file: terraform-pivotalcf/pipelines/tasks/create-opsman-config/task.yml
+  # - &generate-opsman-config
+  - task: create-opsman-config
+    file: ci-src/pipelines/tasks/create-opsman-config/task.yml
   - task: get-tags
-    file: terraform-pivotalcf/pipelines/tasks/get-tags/task.yml
+    file: ci-src/pipelines/tasks/get-tags/task.yml

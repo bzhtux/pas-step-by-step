@@ -8,13 +8,11 @@ image_resource:
     tag: 'latest'
 
 inputs:
-- name: terraform-pivotalcf
-- name: vm-tags
+- name: tf-src
+- name: ci-src
 
-# outputs:
-# - name: secrets-output
-
-params:
+outputs:
+- name: vms-tag
 
 run:
-  path: terraform-pivotalcf/pipelines/tasks/get-tags/task.sh
+  path: tf-src/pipelines/tasks/get-tags/task.sh
