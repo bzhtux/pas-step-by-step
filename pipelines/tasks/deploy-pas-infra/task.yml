@@ -12,8 +12,5 @@ inputs:
 - name: terraform-tfvars
 - name: ci-src
 
-outputs:
-- name: terraform-pivotalcf
-
 run:
   path: ci-src/pipelines/tasks/deploy-pas-infra/task.sh
