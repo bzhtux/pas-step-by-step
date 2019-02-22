@@ -91,7 +91,7 @@ jobs:
   - put: terraform
     params:
       env_name: dev
-      terraform_source: terraform-pivotalcf/terraforming-pas
+      terraform_source: tf-src/terraforming-pas
 
 - name: create-opsman-vm
   plan:

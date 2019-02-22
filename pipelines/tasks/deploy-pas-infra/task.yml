@@ -12,5 +12,8 @@ inputs:
 - name: terraform-tfvars
 - name: ci-src
 
+outputs:
+- name: tf-src
+
 run:
   path: ci-src/pipelines/tasks/deploy-pas-infra/task.sh
