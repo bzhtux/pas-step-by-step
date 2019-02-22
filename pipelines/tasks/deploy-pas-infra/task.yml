@@ -13,7 +13,7 @@ inputs:
 - name: ci-src
 
 outputs:
-- name: vm-tags
+- name: terraform-pivotalcf
 
 run:
   path: ci-src/pipelines/tasks/deploy-pas-infra/task.sh

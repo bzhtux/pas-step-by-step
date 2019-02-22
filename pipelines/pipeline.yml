@@ -83,10 +83,9 @@ resources:
 jobs:
 - name: terraforming-pas
   plan:
-  - aggregate:
-    - get: terraform-pivotalcf
-    - get: terraform-tfvars
-    - get: ci-src
+  - get: terraform-pivotalcf
+  - get: terraform-tfvars
+  - get: ci-src
   - task: prepare-tf-src
     file: ci-src/pipelines/tasks/deploy-pas-infra/task.yml
   - put: terraform
