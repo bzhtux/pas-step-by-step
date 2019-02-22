@@ -57,11 +57,18 @@ resources:
     product_version: 2\.4\.(.*)
     sort_by: semver
 
-- name: terraform-pivotalcf
+- name: ci-src
   type: git
   source:
     uri: git@github.com:bzhtux/pas-step-by-step.git
-    branch: feat/step4+
+    branch: feat/step4
+    private_key: {{git_private_key}}
+
+- name: terraform-pivotalcf
+  type: git
+  source:
+    uri: git@github.com:bzhtux/terraform-pivotalcf.git
+    branch: feat-remove-opsman-vm
     private_key: {{git_private_key}}
 
 - name: terraform-tfvars
@@ -74,12 +81,14 @@ resources:
     regexp: terraform/GCP/terraform-(.*).tfvars
 
 jobs:
-- name: deploy-pas-infra
+- name: terraforming-pas
   plan:
-  - get: terraform-pivotalcf
-  - get: terraform-tfvars
+  - aggregate:
+    - get: terraform-pivotalcf
+    - get: terraform-tfvars
+    - get: ci-src
   - task: prepare-tf-src
-    file: terraform-pivotalcf/pipelines/tasks/deploy-pas-infra/task.yml
+    file: ci-src/pipelines/tasks/deploy-pas-infra/task.yml
   - put: terraform
     params:
       env_name: dev
@@ -103,7 +112,7 @@ jobs:
         - '*image*.tgz'
         unpack: true
     - get: terraform-pivotalcf
-      passed: [deploy-pas-infra]
+      passed: [terraforming-pas]
     - get: opsman-image
       params:
         globs:
