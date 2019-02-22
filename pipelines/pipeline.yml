@@ -95,9 +95,6 @@ jobs:
   - task: get-vms-tag
     file: ci-src/pipelines/tasks/get-tags/task.yml
 
-- name: get-vm-tags
-  plan:
-
 - name: destroy-terraforming-pas
   plan:
   - get: terraform-pivotalcf
