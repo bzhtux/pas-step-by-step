@@ -10,9 +10,10 @@ image_resource:
 inputs:
 - name: terraform-pivotalcf
 - name: terraform-tfvars
+- name: ci-src
 
 outputs:
 - name: vm-tags
 
 run:
-  path: terraform-pivotalcf/pipelines/tasks/deploy-pas-infra/task.sh
+  path: ci-src/pipelines/tasks/deploy-pas-infra/task.sh
